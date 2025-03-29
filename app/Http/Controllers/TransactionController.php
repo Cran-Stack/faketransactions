@@ -26,7 +26,7 @@ class TransactionController extends Controller
         $transactions = config('fake_transactions_data.transactions');
 
         if (empty($transactions)) {
-            $this->error('No transactions found in the config file.');
+            Log::info('No transactions found in the config file.');
             return;
         }
         $transaction = $transactions[array_rand($transactions)];
@@ -34,9 +34,9 @@ class TransactionController extends Controller
         $response = $this->sendTransaction($transaction, 'third');
 
         if ($response['status'] === 'success') {
-            $this->info('Transaction sent successfully');
+            Log::info('Transaction sent successfully');
         } else {
-            $this->error('Failed to send transaction');
+            Log::info('Failed to send transaction');
         }
 
         return response()->json(['message' => 'Transactions sent successfully']);
@@ -51,28 +51,26 @@ class TransactionController extends Controller
             $url = config('fake_transactions_data.third_party_url');
 
             try {
-                $response = Http::post($url, $transaction);
+                // $response = Http::post($url, $transaction);
+                $value = true;
 
-                if ($response['status'] === 'success') {
+                if ($value === true) {
                     return [
                         'status' => 'success',
                         'message' => 'Transaction sent successfully',
-                        'response' => $response->json(),
+                        // 'response' => $response->json(),
                     ];
                 } else {
-                    Log::error('Third-party API request failed', [
-                        'status' => $response->status(),
-                        'body' => $response->body(),
-                    ]);
+                    Log::info('Third-party API request failed');
 
                     return [
                         'status' => 'error',
                         'message' => 'Third-party API request failed',
-                        'response' => $response->body(),
+                        // 'response' => $response->body(),
                     ];
                 }
             } catch (\Exception $e) {
-                Log::error('Third-party API request error', ['error' => $e->getMessage()]);
+                Log::info('Third-party API request error', ['error' => $e->getMessage()]);
 
                 return [
                     'status' => 'failed',
