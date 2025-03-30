@@ -30,6 +30,7 @@ class TransactionController extends Controller
             return;
         }
         $transaction = $transactions[array_rand($transactions)];
+        log::info('this is the transaction details'.json_encode($transaction));
 
         $response = $this->sendTransaction($transaction, 'third');
 
@@ -51,7 +52,8 @@ class TransactionController extends Controller
             $url = config('fake_transactions_data.third_party_url');
 
             try {
-                // $response = Http::post($url, $transaction);
+                $response = Http::post($url, $transaction);
+                log::info('this is the response'.$response);
                 $value = true;
 
                 if ($value === true) {
