@@ -1,66 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Fake Transactions - Laravel Application Documentation
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
+Fake Transactions is a Laravel-based application that generates and sends randomized API requests to a third-party endpoint at scheduled intervals. The application is designed to simulate financial transactions and test external API integrations.
 
-## About Laravel
+## Repository
+GitHub Repository: [Fake Transactions](git@github.com:Cran-Stack/faketransactions.git)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## File Structure
+```
+faketransactions/
+│── app/
+│   ├── Console/
+│   │   ├── Commands/
+│   │   │   ├── SendFakeTransactions.php  # Command for sending transactions
+│   ├── Providers/
+│   │   ├── FakeTransactionServiceProvider.php  # Service provider for transactions
+│   ├── Services/
+│   │   ├── FakeTransactionService.php  # Service handling transaction logic
+│
+│── config/
+│   ├── faketransactions.php  # Configuration file for transactions and third-party endpoint
+│
+│── database/
+│   ├── migrations/
+│   │   ├── 2024_xx_xx_create_transactions_table.php  # Migration file for transactions
+│
+│── routes/
+│   ├── api.php  # API routes
+│
+│── .env.example  # Environment variable example file
+│── .env  # Environment configuration (ignored in version control)
+│── artisan  # Laravel CLI tool
+│── composer.json  # Dependencies and project configuration
+│── package.json  # Node.js dependencies (if applicable)
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setting Up the Project
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Clone the Repository
+```sh
+git clone git@github.com:Cran-Stack/faketransactions.git
+cd faketransactions
+```
 
-## Learning Laravel
+### 2. Install Dependencies
+```sh
+composer install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 3. Copy Environment Configuration
+```sh
+cp .env.example .env
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 4. Configure the `.env` File
+Update the `.env` file with database credentials and third-party API URL:
+```
+THIRD_PARTY_API_URL=http://localhost:3000/api/v1/transactions/screen
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 5. Generate Application Key
+```sh
+php artisan key:generate
+```
 
-## Laravel Sponsors
+### 6. Run Database Migrations
+```sh
+php artisan migrate
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Where the Code is Written
+- **Transaction Logic:** `app/Services/FakeTransactionService.php`
+- **Scheduled Command:** `app/Console/Commands/SendFakeTransactions.php`
+- **Configuration:** `config/faketransactions.php`
+- **Routes:** `routes/api.php`
 
-### Premium Partners
+## Setting Up Crontab on Mac
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+To schedule the Laravel task every minute:
 
-## Contributing
+1. Open the crontab editor:
+```sh
+crontab -e
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. Add the following line at the end:
+```sh
+* * * * * cd /path/to/faketransactions && php artisan schedule:run >> /dev/null 2>&1
+```
+(Replace `/path/to/faketransactions` with the actual path to your project.)
 
-## Code of Conduct
+3. Save and exit.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. Verify the crontab is running:
+```sh
+crontab -l
+```
 
-## Security Vulnerabilities
+## Running the Application
+To manually trigger the fake transaction command:
+```sh
+php artisan send:fake-transactions
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Your Laravel application is now set up and ready to generate fake transactions!
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
