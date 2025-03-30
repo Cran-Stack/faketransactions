@@ -97,6 +97,13 @@ crontab -e
 crontab -l
 ```
 
+### Restarting the Cron Service on Mac
+If the cron service is not running, restart it with:
+```sh
+sudo launchctl stop com.apple.cron
+sudo launchctl start com.apple.cron
+```
+
 ## Running the Application
 To manually trigger the fake transaction command:
 ```sh
